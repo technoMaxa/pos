@@ -7,11 +7,18 @@ ICON_DIR="/usr/share/icons/hicolor/512x512/apps"
 
 echo "🗑️  Desinstalando Mi Tiendita..."
 
-read -p "⚠️  Esto eliminará COMPLETAMENTE el frontend. ¿Continuar? (SI): " CONFIRM
-if [ "$CONFIRM" != "SI" ]; then
-  echo "❌ Cancelado"
-  exit 1
+AUTO_MODE="${AUTO_MODE:-false}"
+
+if [ "$AUTO_MODE" != "true" ]; then
+  read -p "⚠️  Esto eliminará COMPLETAMENTE el frontend. ¿Continuar? (SI): " CONFIRM
+  if [ "$CONFIRM" != "SI" ]; then
+    echo "❌ Cancelado"
+    exit 1
+  fi
+else
+  echo "⚠️  uninstall.sh ejecutándose en modo automático"
 fi
+
 
 echo "⏹️  Deteniendo procesos..."
 pkill -f "pos-app" || true

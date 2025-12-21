@@ -29,9 +29,24 @@ if [ ! -f "$VERSION_FILE" ]; then
   exit 1
 fi
 
-VERSION=$(cat "$VERSION_FILE")
+#!/bin/bash
+set -e
 
-APPIMAGE="$INSTALL_DIR/MiTiendita-$VERSION.AppImage"
+APP_DIR="/opt/pos/frontend"
+VERSION_FILE="$APP_DIR/version.txt"
+
+# ===============================
+# VALIDAR PARÁMETRO
+# ===============================
+if [ -z "$1" ]; then
+  echo "❌ Debes indicar la versión a instalar"
+  echo "   Uso: install.sh <version>"
+  exit 1
+fi
+
+VERSION="$1"
+APPIMAGE="$APP_DIR/MiTiendita-$VERSION.AppImage"
+
 
 if [ ! -f "$APPIMAGE" ]; then
   echo "❌ No se encontró el AppImage:"
@@ -129,6 +144,26 @@ ln -sf "$INSTALL_DIR/pos-app-wrapper" /usr/local/bin/pos-app
 # --------------------------------------
 chown -R root:root "$INSTALL_DIR"
 chmod 755 "$INSTALL_DIR"
+
+# --------------------------------------
+# Refrescar caches de iconos y desktop
+# --------------------------------------
+echo "🔄 Actualizando caches del sistema..."
+
+gtk-update-icon-cache -f -t /usr/share/icons/hicolor >/dev/null 2>&1 || true
+update-desktop-database /usr/share/applications >/dev/null 2>&1 || true
+
+
+# --------------------------------------
+# Guardar versión instalada
+# --------------------------------------
+VERSION_FILE="/opt/pos/frontend/version.txt"
+
+echo "$VERSION" > "$VERSION_FILE"
+chmod 644 "$VERSION_FILE"
+
+echo "📄 version.txt actualizado a $VERSION"
+
 
 echo "======================================"
 echo "✅ Frontend instalado correctamente"

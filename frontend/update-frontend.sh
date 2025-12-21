@@ -130,16 +130,25 @@ if [ -f "$BIN" ]; then
   cp "$BIN" "$BIN.bak"
 fi
 
-# ==================================================
-# INSTALACIÓN
-# ==================================================
-echo "🚀 Instalando nueva versión..."
 
-mv "$TMP_FILE" "$BIN"
-chmod +x "$BIN"
 
-echo "$REMOTE_VERSION" > "$VERSION_FILE"
-chmod 644 "$VERSION_FILE"
+# ==================================================
+# INSTALACIÓN (USANDO install.sh)
+# ==================================================
+echo "🚀 Preparando instalación..."
+
+FINAL_APPIMAGE="$APP_DIR/MiTiendita-$REMOTE_VERSION.AppImage"
+
+echo "📦 Moviendo AppImage a $FINAL_APPIMAGE"
+mv "$TMP_FILE" "$FINAL_APPIMAGE"
+chmod +x "$FINAL_APPIMAGE"
+
+echo "🧹 Ejecutando uninstall.sh..."
+AUTO_MODE=true /opt/pos/frontend/uninstall.sh || true
+
+echo "📦 Ejecutando install.sh versión $REMOTE_VERSION..."
+/opt/pos/frontend/install.sh "$REMOTE_VERSION"
+
 
 # ==================================================
 # VERIFICACIÓN FINAL
@@ -151,6 +160,7 @@ if [ ! -x "$BIN" ]; then
 fi
 
 rm -f "$BIN.bak"
+
 
 echo "======================================"
 echo "✅ Frontend actualizado a $REMOTE_VERSION"
