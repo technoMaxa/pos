@@ -1,0 +1,44 @@
+# ===============================
+# Binarios (NO versionar)
+# ===============================
+/frontend/pos-app
+/frontend/pos-app-wrapper
+/frontend/MiTiendita-*.AppImage
+/backend/pos-backend.jar
+
+# ===============================
+# Backups y datos runtime
+# ===============================
+/backups/
+/frontend/*.bak
+/backend/*.bak
+
+# ===============================
+# Version files (se generan en runtime)
+# ===============================
+/frontend/version.txt
+/backend/version.txt
+
+# ===============================
+# Logs
+# ===============================
+*.log
+
+# ===============================
+# Python
+# ===============================
+__pycache__/
+*.pyc
+
+# ===============================
+# OS / Editor
+# ===============================
+.DS_Store
+.vscode/
+.idea/
+
+# ===============================
+# Temporales
+# ===============================
+*.tmp
+*.swp

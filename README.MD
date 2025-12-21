@@ -104,6 +104,12 @@ sudo chown root:root /etc/pos-frontend.env
 
 ## 🧩 Instalación inicial del sistema
 
+chmod +x /opt/pos/frontend/update-frontend.sh
+chmod +x /opt/pos/backend/update-backend.sh
+chmod +x /opt/pos/frontend/install.sh 
+chmod +x /opt/pos/frontend/uninstall.sh 
+
+
 ## ⚠️ Este paso se ejecuta SOLO UNA VEZ por equipo
 
 sudo python3 /opt/pos/install.py

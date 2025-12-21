@@ -22,7 +22,6 @@ echo "🧹 Eliminando archivos instalados..."
 
 rm -f "$INSTALL_DIR/pos-app"
 rm -f "$INSTALL_DIR/pos-app-wrapper"
-rm -f "$INSTALL_DIR/version.txt"
 
 rm -f "$DESKTOP_DIR/pos-app.desktop"
 rm -f "$ICON_DIR/pos-app.png"
