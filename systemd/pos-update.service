@@ -1,0 +1,20 @@
+[Unit]
+Description=POS Update Service (Frontend + Backend)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/opt/pos
+ExecStart=/bin/bash -c "\
+  echo '=== POS UPDATE START ==='; \
+  /opt/pos/frontend/update-frontend.sh || true; \
+  /opt/pos/backend/update-backend.sh || true; \
+  echo '=== POS UPDATE END ===' \
+"
+StandardOutput=append:/var/log/pos-update.log
+StandardError=append:/var/log/pos-update.log
+
+[Install]
+WantedBy=multi-user.target

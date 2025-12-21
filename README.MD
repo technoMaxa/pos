@@ -143,15 +143,15 @@ El sistema soporta:
 ## 🖥️ Ventana visual para el usuario durante la descarga
 
 Crear servicio systemd
-1️⃣ Copiar archivos de servicio
+**1️⃣ Copiar archivos de servicio
 sudo cp /opt/pos/systemd/pos-update.service /etc/systemd/system/
 sudo cp /opt/pos/systemd/pos-update.timer /etc/systemd/system/
 
-2️⃣ Recargar systemd
+**2️⃣ Recargar systemd
 sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
 
-3️⃣ Activar temporizador
+**3️⃣ Activar temporizador
 sudo systemctl enable pos-update.timer
 sudo systemctl start pos-update.timer
 
