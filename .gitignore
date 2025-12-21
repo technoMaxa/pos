@@ -16,8 +16,8 @@
 # ===============================
 # Version files (se generan en runtime)
 # ===============================
-#/frontend/version.txt
-#/backend/version.txt
+/frontend/version.txt
+/backend/version.txt
 
 # ===============================
 # Logs
