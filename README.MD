@@ -159,13 +159,100 @@ sudo cp /opt/pos/systemd/pos-backend.service /etc/systemd/system/
 sudo chown root:root /etc/systemd/system/pos-backend.service
 sudo chmod 644 /etc/systemd/system/pos-backend.service
 
+sudo cp /opt/pos/systemd/backup-mysql.service /etc/systemd/system/
+sudo cp /opt/pos/systemd/backup-mysql.timer /etc/systemd/system/
+
+sudo systemctl daemon-reload
+sudo systemctl enable backup-mysql.timer
+sudo systemctl start backup-mysql.timer
+
+systemctl list-timers | grep backup
 
 
-## ⚠️ Reglas importantes
+## Configuración BD
 
-## ❌ Nunca ejecutar uninstall.sh como parte de una actualización
+sudo apt update
+sudo apt upgrade -y
 
-## ✅ update-frontend.sh solo reemplaza el binario
+sudo apt install mysql-server -y
+
+| Acción           | Comando                        |
+| ---------------- | ------------------------------ |
+| Ver servicio     | `systemctl status mysql`       |
+| Entrar como root | `sudo mysql`                   |
+| Reiniciar        | `sudo systemctl restart mysql` |
+| Logs             | `journalctl -u mysql`          |
+
+base: tienda
+
+## crear BD para la API
+
+CREATE DATABASE tienda
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+
+
+user: admin
+pass: admin
+
+
+## crear usuario para la API BD
+
+CREATE USER 'api_user'@'localhost'
+IDENTIFIED BY 'Un_Password_seguro90!';
+
+GRANT ALL PRIVILEGES ON tienda.* TO 'api_user'@'localhost';
+FLUSH PRIVILEGES;
+
+EXIT;
+
+## Cargar BD de la API 
+
+mysql -u api_user -p tienda < /opt/pos/tienda/tienda.sql
+
+## validar si se ejecuto 
+
+mysql -u api_user -p tienda
+
+SHOW TABLES;
+
+Si ves tablas → ✅ todo perfecto.
+
+## Verificar permisos (opcional pero recomendado)
+
+SHOW GRANTS FOR 'tienda_api'@'localhost';
+
+## 👤 3️⃣ Usuario para backups (opcional pero recomendado)
+
+CREATE USER 'backup_pos'@'localhost'
+IDENTIFIED BY 'BackupPassword123!';
+
+GRANT SELECT, LOCK TABLES, SHOW VIEW
+ON tienda.* TO 'backup_pos'@'localhost';
+
+FLUSH PRIVILEGES;
+
+/opt/pos/bd/backup-mysql.sh
+
+## 🔐 Guardar contraseña sin exponerla
+
+nano /root/.my.cnf
+---
+[client]
+user=backup_pos
+password=BackupPassword123!
+host=localhost
+---
+
+sudo chmod 600 /root/.my.cnf
+
+
+
+
+## 🔁 7️⃣ Restaurar un backup (cuando lo necesites)
+
+gunzip < tienda_2025-01-26_02-00.sql.gz | mysql -u tienda_api -p tienda
 
 ## 🔐 Los tokens son solo lectura
 

@@ -1,0 +1,6 @@
+[Unit]
+Description=Backup MySQL POS
+
+[Service]
+Type=oneshot
+ExecStart=/opt/pos/bin/backup-mysql.sh
