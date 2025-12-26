@@ -13,9 +13,9 @@ import sys
 LOGO_PATH = "/opt/pos/img/technomaxa-logo.png"
 
 FRONTEND_SCRIPT = "/opt/pos/frontend/update-frontend.sh"
-BACKEND_SCRIPT  = "/opt/pos/backend/update-backend.sh"
+BACKEND_SCRIPT  = "/opt/pos/backend/install-backend.sh"
 
-WINDOW_TITLE = "TechnoMäxä – Instalación del sistema Mi Tiendita"
+WINDOW_TITLE = "TechnoMaxa – Instalación del sistema Mi Tiendita"
 
 MSG_START = "Preparando instalación del sistema POS..."
 MSG_FRONT = "Actualizando Frontend (Mi Tiendita)..."
