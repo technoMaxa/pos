@@ -1,0 +1,24 @@
+[Unit]
+Description=POS Backend - Mi Tiendita
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/pos/backend
+
+ExecStart=/usr/bin/java -jar /opt/pos/backend/pos-backend.jar
+Restart=always
+RestartSec=5
+
+# Logs
+StandardOutput=journal
+StandardError=journal
+
+# Seguridad básica
+SuccessExitStatus=143
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

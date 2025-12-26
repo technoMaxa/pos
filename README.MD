@@ -155,6 +155,11 @@ sudo systemctl daemon-reload
 sudo systemctl enable pos-update.timer
 sudo systemctl start pos-update.timer
 
+sudo cp /opt/pos/systemd/pos-backend.service /etc/systemd/system/
+sudo chown root:root /etc/systemd/system/pos-backend.service
+sudo chmod 644 /etc/systemd/system/pos-backend.service
+
+
 
 ## ⚠️ Reglas importantes
 
@@ -176,6 +181,8 @@ cat /opt/pos/backend/version.txt
 Forzar actualización manual
 sudo /opt/pos/frontend/update-frontend.sh
 sudo /opt/pos/backend/update-backend.sh
+
+
 
 Logs
 
