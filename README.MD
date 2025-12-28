@@ -200,7 +200,16 @@ pass: admin
 ## crear usuario para la API BD
 
 CREATE USER 'api_user'@'localhost'
-IDENTIFIED BY 'Un_Password_seguro90!';
+IDENTIFIED BY 'Un_Password_seguro90';
+
+## cambiar password del user por si lo necesitas
+
+ALTER USER 'pos_api'@'localhost'
+IDENTIFIED BY 'Un_Password_seguro90';
+
+FLUSH PRIVILEGES;
+EXIT;
+
 
 GRANT ALL PRIVILEGES ON tienda.* TO 'api_user'@'localhost';
 FLUSH PRIVILEGES;

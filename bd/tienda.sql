@@ -1426,8 +1426,10 @@ COMMIT;
 
 BEGIN;
 INSERT INTO `tienda`.`direcciones` (`id`, `municipio_id`, `calle`, `numero_exterior`, `numero_interior`, `colonia`, `codigo_postal`) VALUES (1, 275, 'PRUEBA', 'N7A', '23', 'prueba', '00000');
+INSERT INTO `tienda`.`direcciones` (`id`, `municipio_id`, `calle`, `numero_exterior`, `numero_interior`, `colonia`, `codigo_postal`) VALUES (2, 275, 'PRUEBA', 'N7A', '23', 'prueba', '00000');
 INSERT INTO `tienda`.`personas` (`id`, `direccion_id`, `nombre`, `apellido_paterno`, `apellido_materno`, `fecha_nacimiento`, `telefono`) VALUES (1, 1, 'Admin', 'Admin', 'Admin', '1991-01-01', '5555555555');
 INSERT INTO `tienda`.`users` (`id`, `username`, `email`, `password`, `create_at`, `update_at`, `estatus`) VALUES (1, 'admin', 'admin@gmail.com', '$2a$12$MObkFfu.cnSJTh53Akof4eg4NuxVXvl3.NwX0w9Qye49CFv2KBvB6', '2025-11-19 00:00:00', '2025-11-19 00:00:00', 1);
+INSERT INTO `tienda`.`sucursales` (`id`, `direccion_id`, `nombre`, `status`, `creat_at`) VALUES (1, 2, 'Prueba', 1, now());
 INSERT INTO `tienda`.`empleados` (`id`, `persona_id`, `sucursal_id`, `usuario_id`, `numero_empleado`, `status`, `creat_at`, `update_at`) VALUES (1, 1, 1, 1, '000001', 1, '2024-12-31', '2025-11-19');
 INSERT INTO `tienda`.`users_roles` (`user_id`, `role_id`) VALUES (1, 1);
 INSERT INTO `tienda`.`users_roles` (`user_id`, `role_id`) VALUES (1, 2);
