@@ -14,6 +14,9 @@ Los ejecutables se descargan automáticamente desde GitHub Releases.
 ## 📁 Estructura del sistema
 
 /opt/pos/
+├── bd/
+│   ├── backup-mysql.sh            
+│   ├── tienda.sql            # Script inicial de la BD
 ├── frontend/
 │   ├── pos-app            # AppImage (NO versionado)
 │   ├── version.txt        # Versión instalada del frontend
@@ -35,6 +38,10 @@ Los ejecutables se descargan automáticamente desde GitHub Releases.
 └── README.md
 
 ---
+
+## 📂 Script inicial de Base de Datos (INCLUIDO EN EL REPOSITORIO)
+
+El repositorio **incluye el script SQL inicial** de la base de datos del POS.
 
 ## 🖥️ Requisitos del sistema
 
@@ -94,9 +101,9 @@ sudo nano /etc/pos-backend.env
 Contenido:
 
 GITHUB_TOKEN=YOUR_GITHUB_READONLY_TOKEN  
-SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/tienda  
-SPRING_DATASOURCE_USERNAME=pos_api  
-SPRING_DATASOURCE_PASSWORD=PASSWORD_SEGURO  
+SPRING_DATASOURCE_URL=jdbc:mysql://techno-maxa.com:3306/tienda  
+SPRING_DATASOURCE_USERNAME=api_user
+SPRING_DATASOURCE_PASSWORD=Un_Password_seguro90  
 
 Permisos:
 
@@ -134,8 +141,8 @@ COLLATE utf8mb4_unicode_ci;
 
 ### Crear usuario para la API
 
-CREATE USER 'pos_api'@'localhost'  
-IDENTIFIED BY 'PASSWORD_SEGURO';  
+CREATE USER 'api_user'@'localhost'  
+IDENTIFIED BY 'Un_Password_seguro90';  
 
 GRANT  
   SELECT, INSERT, UPDATE, DELETE,  
@@ -146,15 +153,15 @@ GRANT
   LOCK TABLES,  
   EXECUTE,  
   SHOW VIEW  
-ON tienda.* TO 'pos_api'@'localhost';  
+ON tienda.* TO 'api_user'@'localhost';  
 
-GRANT SELECT ON mysql.* TO 'pos_api'@'localhost';  
+GRANT SELECT ON mysql.* TO 'api_user'@'localhost';  
 
 FLUSH PRIVILEGES;  
 
 ### Cargar estructura inicial
 
-mysql -u pos_api -p tienda < /opt/pos/tienda/tienda.sql  
+mysql -u api_user -p tienda < /opt/pos/tienda/tienda.sql  
 
 ---
 
