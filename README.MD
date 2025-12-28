@@ -1,19 +1,18 @@
 # POS – Scripts de Instalación y Actualización
 
 Este repositorio contiene los scripts necesarios para **instalar, actualizar y mantener**
-el sistema POS, compuesto por:
+el sistema POS de TechnoMäxä, compuesto por:
 
-- **Frontend**: Aplicación Electron distribuida como AppImage
-- **Backend**: Aplicación Spring Boot distribuida como JAR
+- Frontend: Aplicación Electron distribuida como AppImage
+- Backend: Aplicación Spring Boot distribuida como JAR
 
-⚠️ **Este repositorio NO contiene binarios**  
-Los ejecutables se descargan automáticamente desde **GitHub Releases**.
+⚠️ Este repositorio NO contiene binarios  
+Los ejecutables se descargan automáticamente desde GitHub Releases.
 
 ---
 
-## 📁 Estructura del proyecto
+## 📁 Estructura del sistema
 
-```text
 /opt/pos/
 ├── frontend/
 │   ├── pos-app            # AppImage (NO versionado)
@@ -25,282 +24,216 @@ Los ejecutables se descargan automáticamente desde **GitHub Releases**.
 │   ├── pos-backend.jar    # JAR (NO versionado)
 │   ├── version.txt        # Versión instalada del backend
 │   └── update-backend.sh
+├── systemd/
+│   ├── pos-backend.service
+│   ├── pos-update.service
+│   ├── pos-update.timer
+│   ├── backup-mysql.service
+│   └── backup-mysql.timer
 ├── install.py             # Instalación inicial del sistema
 ├── update.py              # Actualización con interfaz visual
 └── README.md
 
 ---
-```
 
 ## 🖥️ Requisitos del sistema
 
-Lubuntu / Ubuntu 20.04 o superior
+- Ubuntu / Lubuntu 20.04 o superior
+- systemd
+- curl
+- git
+- python3
+- libfuse2
+- MySQL 8+
+- Java 17
 
-curl
+### Instalar dependencias básicas
 
-git
+sudo apt update  
+sudo apt install -y curl git libfuse2 python3  
+sudo apt install -y python3-pil python3-pil.imagetk  
+sudo apt install -y openjdk-17-jdk  
 
-systemd
+---
 
-libfuse2
+## 🌐 Configuración de hosts (OBLIGATORIO)
 
-python3
+Para entorno local y consistencia de dominios:
 
-## Instalar dependencias básicas:
+sudo nano /etc/hosts
 
-sudo apt update
-sudo apt install -y curl git libfuse2 python3
-sudo apt install -y python3-pil python3-pil.imagetk
+Agregar:
 
+127.0.0.1   techno-maxa.com
+
+---
 
 ## 🚀 Instalación inicial (ingenieros de campo)
-1️⃣ Abrir terminal y entrar a /opt
-cd /opt
 
-2️⃣ Clonar el repositorio
-sudo git clone https://github.com/technoMaxa/pos.git
+⚠️ ESTE PROCESO SE EJECUTA SOLO UNA VEZ POR EQUIPO
 
-3️⃣ Asignar permisos al usuario local
+### 1️⃣ Clonar repositorio
 
-Sustituye POS por el usuario del equipo
-(por ejemplo: fulano)
+cd /opt  
+sudo git clone https://github.com/technoMaxa/pos.git  
 
-sudo chown -R POS:POS /opt/pos
+### 2️⃣ Asignar permisos al usuario local
 
-4️⃣ (Opcional) Abrir en Visual Studio Code
-code /opt/pos
+Sustituye POS por el usuario del equipo (ej. fulano)
+
+sudo chown -R POS:POS /opt/pos  
+
+---
 
 ## 🔐 Variables de entorno (OBLIGATORIO)
 
-Los scripts utilizan tokens de solo lectura para consultar GitHub Releases.
+### Backend
 
-Backend
 sudo nano /etc/pos-backend.env
 
-
 Contenido:
 
-GITHUB_TOKEN=YOUR_GITHUB_READONLY_TOKEN
-
+GITHUB_TOKEN=YOUR_GITHUB_READONLY_TOKEN  
+SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/tienda  
+SPRING_DATASOURCE_USERNAME=pos_api  
+SPRING_DATASOURCE_PASSWORD=PASSWORD_SEGURO  
 
 Permisos:
 
-sudo chmod 600 /etc/pos-backend.env
-sudo chown root:root /etc/pos-backend.env
+sudo chmod 600 /etc/pos-backend.env  
+sudo chown root:root /etc/pos-backend.env  
 
-Frontend
+### Frontend
+
 sudo nano /etc/pos-frontend.env
 
-
 Contenido:
 
-GITHUB_TOKEN=YOUR_GITHUB_READONLY_TOKEN
-
+GITHUB_TOKEN=YOUR_GITHUB_READONLY_TOKEN  
 
 Permisos:
 
-sudo chmod 600 /etc/pos-frontend.env
-sudo chown root:root /etc/pos-frontend.env
+sudo chmod 600 /etc/pos-frontend.env  
+sudo chown root:root /etc/pos-frontend.env  
 
-## 🧩 Instalación inicial del sistema
-
-chmod +x /opt/pos/frontend/update-frontend.sh
-chmod +x /opt/pos/backend/update-backend.sh
-chmod +x /opt/pos/frontend/install.sh 
-chmod +x /opt/pos/frontend/uninstall.sh 
-
-
-## ⚠️ Este paso se ejecuta SOLO UNA VEZ por equipo
-
-sudo python3 /opt/pos/install.py
-
-
-Este proceso:
-
-Descarga el frontend (AppImage)
-
-Descarga el backend (JAR)
-
-Crea la estructura /opt/pos
-
-Deja el sistema listo para actualizaciones
-
-🔄 Actualización manual
-Frontend
-sudo /opt/pos/frontend/update-frontend.sh
-
-Backend
-sudo /opt/pos/backend/update-backend.sh
-
-🤖 Actualizaciones automáticas
-
-El sistema soporta:
-
-🔁 Actualización automática cada 12 horas
-
-🔄 Actualización automática al reiniciar el equipo
-
-## 🖥️ Ventana visual para el usuario durante la descarga
-
-Crear servicio systemd
-**1️⃣ Copiar archivos de servicio
-sudo cp /opt/pos/systemd/pos-update.service /etc/systemd/system/
-sudo cp /opt/pos/systemd/pos-update.timer /etc/systemd/system/
-
-**2️⃣ Recargar systemd
-sudo systemctl daemon-reexec
-sudo systemctl daemon-reload
-
-**3️⃣ Activar temporizador
-sudo systemctl enable pos-update.timer
-sudo systemctl start pos-update.timer
-
-sudo cp /opt/pos/systemd/pos-backend.service /etc/systemd/system/
-sudo chown root:root /etc/systemd/system/pos-backend.service
-sudo chmod 644 /etc/systemd/system/pos-backend.service
-
-sudo cp /opt/pos/systemd/backup-mysql.service /etc/systemd/system/
-sudo cp /opt/pos/systemd/backup-mysql.timer /etc/systemd/system/
-
-sudo systemctl daemon-reload
-sudo systemctl enable backup-mysql.timer
-sudo systemctl start backup-mysql.timer
-
-systemctl list-timers | grep backup
-
-
-## Configuración BD
-
-sudo apt update
-sudo apt upgrade -y
-
-sudo apt install mysql-server -y
-
-| Acción           | Comando                        |
-| ---------------- | ------------------------------ |
-| Ver servicio     | `systemctl status mysql`       |
-| Entrar como root | `sudo mysql`                   |
-| Reiniciar        | `sudo systemctl restart mysql` |
-| Logs             | `journalctl -u mysql`          |
-
-base: tienda
-
-## crear BD para la API
-
-CREATE DATABASE tienda
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-
-
-
-user: admin
-pass: admin
-
-
-## crear usuario para la API BD
-
-CREATE USER 'api_user'@'localhost'
-IDENTIFIED BY 'Un_Password_seguro90';
-
-## cambiar password del user por si lo necesitas
-
-ALTER USER 'api_user'@'localhost'
-IDENTIFIED BY 'Un_Password_seguro90';
-
-FLUSH PRIVILEGES;
-EXIT;
-
-
-GRANT ALL PRIVILEGES ON tienda.* TO 'api_user'@'localhost';
-FLUSH PRIVILEGES;
-
-EXIT;
-
-## Cargar BD de la API 
-
-mysql -u api_user -p tienda < /opt/pos/tienda/tienda.sql
-
-## validar si se ejecuto 
-
-mysql -u api_user -p tienda
-
-SHOW TABLES;
-
-Si ves tablas → ✅ todo perfecto.
-
-## Verificar permisos (opcional pero recomendado)
-
-SHOW GRANTS FOR 'tienda'@'localhost';
-
-## 👤 3️⃣ Usuario para backups (opcional pero recomendado)
-
-CREATE USER 'backup_pos'@'localhost'
-IDENTIFIED BY 'BackupPassword123!';
-
-GRANT SELECT, LOCK TABLES, SHOW VIEW
-ON tienda.* TO 'backup_pos'@'localhost';
-
-FLUSH PRIVILEGES;
-
-/opt/pos/bd/backup-mysql.sh
-
-## 🔐 Guardar contraseña sin exponerla
-
-nano /root/.my.cnf
----
-[client]
-user=backup_pos
-password=BackupPassword123!
-host=localhost
 ---
 
-sudo chmod 600 /root/.my.cnf
+## 🐬 Configuración de Base de Datos (MySQL 8+)
 
+Instalar MySQL:
 
+sudo apt install -y mysql-server  
+sudo systemctl enable mysql  
+sudo systemctl start mysql  
 
+### Crear base de datos
 
-## 🔁 7️⃣ Restaurar un backup (cuando lo necesites)
+CREATE DATABASE tienda  
+CHARACTER SET utf8mb4  
+COLLATE utf8mb4_unicode_ci;  
 
-gunzip < tienda_2025-01-26_02-00.sql.gz | mysql -u tienda_api -p tienda
+### Crear usuario para la API
 
-## 🔐 Los tokens son solo lectura
+CREATE USER 'pos_api'@'localhost'  
+IDENTIFIED BY 'PASSWORD_SEGURO';  
 
-## 📦 Los binarios NO viven en Git
+GRANT  
+  SELECT, INSERT, UPDATE, DELETE,  
+  CREATE, DROP, ALTER,  
+  INDEX,  
+  REFERENCES,  
+  CREATE TEMPORARY TABLES,  
+  LOCK TABLES,  
+  EXECUTE,  
+  SHOW VIEW  
+ON tienda.* TO 'pos_api'@'localhost';  
 
-## 🧠 version.txt es la fuente de verdad
+GRANT SELECT ON mysql.* TO 'pos_api'@'localhost';  
 
-🛠️ Troubleshooting
-Ver versión instalada
-cat /opt/pos/frontend/version.txt
-cat /opt/pos/backend/version.txt
+FLUSH PRIVILEGES;  
 
-Forzar actualización manual
-sudo /opt/pos/frontend/update-frontend.sh
-sudo /opt/pos/backend/update-backend.sh
+### Cargar estructura inicial
 
+mysql -u pos_api -p tienda < /opt/pos/tienda/tienda.sql  
 
+---
 
-Logs
+## ⚙️ Servicios systemd
 
-Backend: /opt/pos/backend/logs/backend.log
+### Backend
 
-Frontend: ejecutar desde terminal para ver salida
+sudo cp /opt/pos/systemd/pos-backend.service /etc/systemd/system/  
+sudo chmod 644 /etc/systemd/system/pos-backend.service  
+
+sudo systemctl daemon-reexec  
+sudo systemctl daemon-reload  
+sudo systemctl enable pos-backend  
+sudo systemctl start pos-backend  
+
+Ver estado:
+
+sudo systemctl status pos-backend  
+
+---
+
+### Actualizaciones automáticas
+
+sudo cp /opt/pos/systemd/pos-update.* /etc/systemd/system/  
+
+sudo systemctl daemon-reload  
+sudo systemctl enable pos-update.timer  
+sudo systemctl start pos-update.timer  
+
+---
+
+### Backups automáticos (opcional)
+
+sudo cp /opt/pos/systemd/backup-mysql.* /etc/systemd/system/  
+
+sudo systemctl daemon-reload  
+sudo systemctl enable backup-mysql.timer  
+sudo systemctl start backup-mysql.timer  
+
+systemctl list-timers | grep backup  
+
+---
+
+## 🔄 Actualización manual
+
+Frontend:
+
+sudo /opt/pos/frontend/update-frontend.sh  
+
+Backend:
+
+sudo /opt/pos/backend/update-backend.sh  
+
+---
+
+## 🛠️ Troubleshooting
+
+Ver versión instalada:
+
+cat /opt/pos/frontend/version.txt  
+cat /opt/pos/backend/version.txt  
+
+Ver logs del backend:
+
+journalctl -u pos-backend -f  
+
+---
 
 ## 📌 Notas finales
 
-Este repositorio está diseñado para:
+- Los binarios NO viven en Git
+- version.txt es la fuente de verdad
+- MySQL 8+ requiere privilegios adicionales
+- El backend SIEMPRE usa variables del sistema
+- El servicio debe estar habilitado, no solo iniciado
 
-Instalaciones en campo
-
-Actualizaciones seguras
-
-Operación continua
-
-Mantenimiento sencillo
-
-Es un enfoque probado en sistemas POS, kioscos y terminales de autoservicio.
+---
 
 ## 🧠 Contacto
 
-Equipo **TechnoMäxä**  
-📧 techno.maxa@gmail.com
+Equipo TechnoMäxä  
+techno.maxa@gmail.com

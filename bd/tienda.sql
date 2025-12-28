@@ -1433,5 +1433,6 @@ INSERT INTO `tienda`.`sucursales` (`id`, `direccion_id`, `nombre`, `status`, `cr
 INSERT INTO `tienda`.`empleados` (`id`, `persona_id`, `sucursal_id`, `usuario_id`, `numero_empleado`, `status`, `creat_at`, `update_at`) VALUES (1, 1, 1, 1, '000001', 1, '2024-12-31', '2025-11-19');
 INSERT INTO `tienda`.`users_roles` (`user_id`, `role_id`) VALUES (1, 1);
 INSERT INTO `tienda`.`users_roles` (`user_id`, `role_id`) VALUES (1, 2);
+INSERT INTO `tienda`.`clientes` (`id`, `nombre`, `email`, `limite`, `estatus`, `create_at`, `update_at`) VALUES (1, 'publico en general', 'publicoGeneral@dominio.com', '0.00', 1, '1991-12-31 21:35:53', NULL);
 COMMIT;
 
