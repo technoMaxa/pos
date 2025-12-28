@@ -204,7 +204,7 @@ IDENTIFIED BY 'Un_Password_seguro90';
 
 ## cambiar password del user por si lo necesitas
 
-ALTER USER 'pos_api'@'localhost'
+ALTER USER 'api_user'@'localhost'
 IDENTIFIED BY 'Un_Password_seguro90';
 
 FLUSH PRIVILEGES;
@@ -230,7 +230,7 @@ Si ves tablas → ✅ todo perfecto.
 
 ## Verificar permisos (opcional pero recomendado)
 
-SHOW GRANTS FOR 'tienda_api'@'localhost';
+SHOW GRANTS FOR 'tienda'@'localhost';
 
 ## 👤 3️⃣ Usuario para backups (opcional pero recomendado)
 
